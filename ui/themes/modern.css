@@ -1,0 +1,176 @@
+:root {
+    --bg-color: #f5f5f5;
+    --text-color: #333333;
+    --accent-color: #4a90e2;
+    --font-family: 'Segoe UI', sans-serif;
+    --gauge-bg: rgba(0, 0, 0, 0.1);
+    --gauge-fill: linear-gradient(90deg, #4a90e2, #00bcd4);
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+}
+
+.titlebar {
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 8px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.titlebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.title {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.titlebar-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.titlebar-btn {
+    background: none;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.titlebar-btn:hover {
+    background: #e0e0e0;
+}
+
+.close {
+    color: #ff5252;
+}
+
+.connection-status {
+    padding: 15px;
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.status-dot.disconnected {
+    background: #ff5252;
+}
+
+.status-dot.connected {
+    background: #4caf50;
+}
+
+.connect-btn {
+    margin-left: auto;
+    padding: 8px 16px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.connect-btn:hover {
+    opacity: 0.9;
+}
+
+.app-container {
+    padding: 20px;
+}
+
+.teletext-page {
+    font-family: var(--font-family);
+    line-height: 1.5;
+    padding: 20px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 15px 0;
+    white-space: pre-wrap;
+}
+
+.teletext-list {
+    font-family: var(--font-family);
+    line-height: 1.5;
+    padding: 20px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 15px 0;
+    white-space: pre-wrap;
+}
+
+/* Gauge Plugin Styles */
+.gauge-plugin {
+    background: var(--gauge-bg);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 15px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.gauge-label {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.gauge-container {
+    height: 24px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.gauge-fill {
+    height: 100%;
+    background: var(--gauge-fill);
+    border-radius: 12px;
+    transition: width 0.5s ease;
+}
+
+.gauge-value {
+    text-align: center;
+    font-family: monospace;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    font-style: italic;
+}

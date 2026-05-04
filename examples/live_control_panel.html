@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThinUI Live Control Panel</title>
+    <style>
+        :root {
+            --retro-black: #111111;
+            --retro-gray: #333333;
+            --retro-blue: #67B6BD;
+            --retro-purple: #8B3F96;
+            --retro-green: #32CD32;
+            --retro-yellow: #FFD700;
+            --retro-cyan: #00FFFF;
+            --retro-magenta: #FF00FF;
+            --retro-border: #444444;
+            --retro-glow: 0 0 10px rgba(103, 182, 189, 0.7);
+            
+            /* Theme Variables - will be updated by JavaScript */
+            --theme-primary: var(--retro-blue);
+            --theme-secondary: var(--retro-purple);
+            --theme-accent: var(--retro-green);
+            --theme-text: var(--retro-cyan);
+        }
+
+        /* Theme: Modern */
+        .theme-modern {
+            --theme-primary: #4a90e2;
+            --theme-secondary: #8b5cf6;
+            --theme-accent: #10b981;
+        }
+
+        /* Theme: Dark */
+        .theme-dark {
+            --theme-primary: #bb86fc;
+            --theme-secondary: #03dac6;
+            --theme-accent: #03dac6;
+        }
+
+        /* Theme: Terminal */
+        .theme-terminal {
+            --theme-primary: #33ff57;
+            --theme-secondary: #ff335b;
+            --theme-accent: #33ff57;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', 'Lucida Console', monospace;
+            background-color: var(--retro-black);
+            color: var(--retro-cyan);
+            line-height: 1.4;
+            overflow-x: hidden;
+        }
+
+        .terminal {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid var(--retro-border);
+            box-shadow: var(--retro-glow);
+        }
+
+        .title-bar {
+            background: linear-gradient(90deg, var(--retro-black), var(--retro-gray));
+            color: var(--retro-blue);
+            padding: 12px 20px;
+            border-bottom: 2px solid var(--retro-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .title-bar .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .title-bar .blitz-icon {
+            color: var(--retro-blue);
+            font-size: 1.5em;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-controls button {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: none;
+            color: #aaa;
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .window-controls button:hover {
+            color: white;
+        }
+
+        .status-bar {
+            background: linear-gradient(90deg, var(--retro-gray), var(--retro-black));
+            color: var(--retro-green);
+            padding: 8px 20px;
+            border-bottom: 2px solid var(--retro-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--retro-green);
+            box-shadow: 0 0 5px var(--retro-green);
+        }
+
+        .status-dot.disconnected {
+            background-color: var(--retro-yellow);
+            box-shadow: 0 0 5px var(--retro-yellow);
+        }
+
+        .status-dot.error {
+            background-color: var(--retro-magenta);
+            box-shadow: 0 0 5px var(--retro-magenta);
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel {
+            background: linear-gradient(135deg, rgba(17, 17, 17, 0.8), rgba(51, 51, 51, 0.8));
+            border: 2px solid var(--retro-border);
+            border-radius: 4px;
+            padding: 15px;
+            box-shadow: var(--retro-glow);
+        }
+
+        .panel-title {
+            color: var(--retro-blue);
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            border-bottom: 1px solid var(--retro-border);
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .blitz-button {
+            background: linear-gradient(90deg, var(--retro-blue), var(--retro-purple));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-family: inherit;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 4px 0 var(--retro-gray);
+            transition: all 0.1s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .blitz-button:hover {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--retro-gray);
+        }
+
+        .blitz-button:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .blitz-button.secondary {
+            background: linear-gradient(90deg, var(--retro-gray), var(--retro-black));
+            color: var(--retro-cyan);
+        }
+
+        .blitz-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 0 var(--retro-gray);
+        }
+
+        .blitz-select {
+            background: var(--retro-gray);
+            color: var(--retro-cyan);
+            border: 2px solid var(--retro-border);
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .blitz-select option {
+            background: var(--retro-black);
+            color: var(--retro-cyan);
+        }
+
+        .control-panel {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-group label {
+            color: var(--retro-yellow);
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .renderer-display {
+            background: var(--retro-black);
+            border: 3px double var(--retro-blue);
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .renderer-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--retro-blue), var(--retro-purple), var(--retro-blue));
+        }
+
+        .renderer-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .blitz-logo {
+            font-size: 3em;
+            background: linear-gradient(45deg, var(--retro-blue), var(--retro-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: var(--retro-glow);
+        }
+
+        .renderer-info {
+            text-align: center;
+            color: var(--retro-green);
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .renderer-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: rgba(17, 17, 17, 0.5);
+            border: 1px solid var(--retro-border);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .stat-label {
+            color: var(--retro-yellow);
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: var(--retro-cyan);
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .console {
+            background: var(--retro-black);
+            border: 2px solid var(--retro-border);
+            border-radius: 4px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
+            color: var(--retro-green);
+            white-space: pre-wrap;
+        }
+
+        .console-line {
+            margin-bottom: 5px;
+        }
+
+        .console-line.info {
+            color: var(--retro-cyan);
+        }
+
+        .console-line.success {
+            color: var(--retro-green);
+        }
+
+        .console-line.warning {
+            color: var(--retro-yellow);
+        }
+
+        .console-line.error {
+            color: var(--retro-magenta);
+        }
+
+        .gauge-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        .gauge-label {
+            color: var(--theme-accent);
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .gauge {
+            height: 20px;
+            background: var(--retro-gray);
+            border: 2px solid var(--retro-border);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary));
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .gauge-fill::after {
+            content: '0%';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 0.8em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .title-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .status-bar {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .blitz-button {
+                width: 100%;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--retro-gray);
+            border: 1px solid var(--retro-border);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--retro-blue), var(--retro-purple));
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(var(--retro-cyan), var(--retro-magenta));
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="title-bar">
+            <div class="title">
+                <span class="blitz-icon">⚡</span>
+                <span>THINUI LIVE CONTROL PANEL</span>
+            </div>
+            <div class="window-controls">
+                <button title="Minimize">❖</button>
+                <button title="Maximize">⛶</button>
+                <button title="Close">✕</button>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-indicators">
+                <div class="status-indicator">
+                    <span class="status-dot disconnected"></span>
+                    <span id="connection-status">DISCONNECTED</span>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span id="renderer-status">RENDERER: NONE</span>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span id="fps-status">FPS: 0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="panel">
+                <div class="panel-title">
+                    <span>🎛️ LIVE CONTROL PANEL</span>
+                </div>
+                <div class="control-panel">
+                    <div class="control-group">
+                        <label>Connection</label>
+                        <button class="blitz-button" id="connect-btn">CONNECT</button>
+                    </div>
+                    <div class="control-group">
+                        <label>Renderer</label>
+                        <select class="blitz-select" id="renderer-select" disabled>
+                            <option value="none">Select Renderer</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="wasm">WASM/Blitz</option>
+                            <option value="webgl">WebGL</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Theme</label>
+                        <select class="blitz-select" id="theme-select" disabled>
+                            <option value="retro">Retro</option>
+                            <option value="modern">Modern</option>
+                            <option value="dark">Dark</option>
+                            <option value="terminal">Terminal</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Dashboard</label>
+                        <select class="blitz-select" id="dashboard-select" disabled>
+                            <option value="none">Select Dashboard</option>
+                            <option value="main">Main Dashboard</option>
+                            <option value="gauge">Gauge Demo</option>
+                            <option value="stats">Statistics</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Action</label>
+                        <button class="blitz-button secondary" id="render-btn" disabled>RENDER</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">
+                    <span>🖥️ RENDERER DISPLAY</span>
+                </div>
+                <div class="renderer-display">
+                    <div class="renderer-content">
+                        <div class="blitz-logo">⚡ BLITZ</div>
+                        <div class="renderer-info" id="renderer-info">Disconnected - Connect to activate</div>
+                        <div class="gauge-container">
+                            <div class="gauge-label">Performance</div>
+                            <div class="gauge">
+                                <div class="gauge-fill" id="performance-gauge"></div>
+                            </div>
+                        </div>
+                        <div class="renderer-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">Commands</div>
+                                <div class="stat-value" id="commands-stat">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Memory</div>
+                                <div class="stat-value" id="memory-stat">0MB</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Uptime</div>
+                                <div class="stat-value" id="uptime-stat">0s</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Status</div>
+                                <div class="stat-value" id="status-stat">IDLE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">
+                    <span>📋 SYSTEM CONSOLE</span>
+                    <button class="blitz-button secondary" id="clear-console" style="font-size: 0.8em; padding: 5px 10px;">CLEAR</button>
+                </div>
+                <div class="console" id="console">
+                    <div class="console-line info">🔍 ThinUI Live Control Panel ready</div>
+                    <div class="console-line info">📋 Click CONNECT to start session</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ThinUI Live Control Panel - Interactive System
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // DOM Elements
+            const connectBtn = document.getElementById('connect-btn');
+            const rendererSelect = document.getElementById('renderer-select');
+            const dashboardSelect = document.getElementById('dashboard-select');
+            const renderBtn = document.getElementById('render-btn');
+            const clearConsoleBtn = document.getElementById('clear-console');
+            const consoleElement = document.getElementById('console');
+            const connectionStatus = document.getElementById('connection-status');
+            const rendererStatus = document.getElementById('renderer-status');
+            const fpsStatus = document.getElementById('fps-status');
+            const rendererInfo = document.getElementById('renderer-info');
+            const performanceGauge = document.getElementById('performance-gauge');
+            const statusDot = document.querySelector('.status-dot');
+            
+            // State
+            let connected = false;
+            let currentRenderer = 'none';
+            let currentDashboard = 'none';
+            let commandCount = 0;
+            let startTime = null;
+            let performanceInterval = null;
+            
+            // Initialize
+            function init() {
+                logConsole('🚀 ThinUI Live Control Panel initialized', 'info');
+                updateUIState();
+                setupEventListeners();
+            }
+            
+            // Setup Event Listeners
+            function setupEventListeners() {
+                connectBtn.addEventListener('click', toggleConnection);
+                rendererSelect.addEventListener('change', changeRenderer);
+                
+                // Theme selection
+                const themeSelect = document.getElementById('theme-select');
+                if (themeSelect) {
+                    themeSelect.addEventListener('change', function() {
+                        const theme = this.value;
+                        switchTheme(theme);
+                    });
+                }
+                
+                dashboardSelect.addEventListener('change', changeDashboard);
+                renderBtn.addEventListener('click', executeRender);
+                clearConsoleBtn.addEventListener('click', clearConsole);
+            }
+            
+            // Toggle Connection
+            function toggleConnection() {
+                if (connected) {
+                    disconnect();
+                } else {
+                    connect();
+                }
+            }
+            
+            // Connect to system
+            function connect() {
+                if (connected) return;
+                
+                connected = true;
+                startTime = new Date();
+                commandCount = 0;
+                
+                logConsole('🔌 Connecting to ThinUI system...', 'info');
+                
+                // Enable controls
+                rendererSelect.disabled = false;
+                dashboardSelect.disabled = false;
+                renderBtn.disabled = false;
+                
+                // Start performance monitoring
+                startPerformanceMonitor();
+                
+                setTimeout(() => {
+                    logConsole('✅ Connected successfully', 'success');
+                    logConsole('🎮 System ready for commands', 'info');
+                    updateUIState();
+                    updateStats();
+                }, 800);
+            }
+            
+            // Disconnect from system
+            function disconnect() {
+                if (!connected) return;
+                
+                connected = false;
+                
+                logConsole('🔌 Disconnecting from ThinUI system...', 'info');
+                
+                // Disable controls
+                rendererSelect.disabled = true;
+                dashboardSelect.disabled = true;
+                renderBtn.disabled = true;
+                
+                // Reset state
+                currentRenderer = 'none';
+                currentDashboard = 'none';
+                
+                // Stop performance monitoring
+                clearInterval(performanceInterval);
+                performanceInterval = null;
+                
+                setTimeout(() => {
+                    logConsole('✅ Disconnected', 'warning');
+                    logConsole('📋 Session terminated', 'info');
+                    updateUIState();
+                    updateStats();
+                }, 800);
+            }
+            
+            // Switch theme
+            function switchTheme(theme) {
+                currentTheme = theme;
+                logConsole(`🎨 Applying ${theme} theme...`, 'info');
+                
+                // Remove all theme classes
+                document.body.classList.remove('theme-modern', 'theme-dark', 'theme-terminal');
+                
+                // Add selected theme (retro is default, no class needed)
+                if (theme !== 'retro') {
+                    document.body.classList.add(`theme-${theme}`);
+                }
+                
+                // Force gauge update by toggling a class
+                const gaugeFill = document.getElementById('performance-gauge');
+                gaugeFill.style.width = gaugeFill.style.width; // Force redraw
+                
+                logConsole(`✅ ${theme} theme applied - colors updated`, 'success');
+            }
+            
+            // Change Renderer
+            function changeRenderer() {
+                if (!connected) return;
+                
+                const renderer = rendererSelect.value;
+                if (renderer === 'none') return;
+                
+                currentRenderer = renderer;
+                commandCount++;
+                
+                const rendererName = renderer === 'wasm' ? 'WASM/Blitz' : 
+                                  renderer === 'webgl' ? 'WebGL' : 'JavaScript';
+                
+                logConsole(`🎨 Switching to ${rendererName} renderer...`, 'info');
+                
+                setTimeout(() => {
+                    logConsole(`✅ ${rendererName} renderer activated`, 'success');
+                    updateUIState();
+                    updateStats();
+                }, 500);
+            }
+            
+            // Change Dashboard
+            function changeDashboard() {
+                if (!connected) return;
+                
+                const dashboard = dashboardSelect.value;
+                if (dashboard === 'none') return;
+                
+                currentDashboard = dashboard;
+                commandCount++;
+                
+                logConsole(`📊 Loading ${dashboard} dashboard...`, 'info');
+                
+                setTimeout(() => {
+                    logConsole(`✅ ${dashboard} dashboard loaded`, 'success');
+                    updateUIState();
+                    updateStats();
+                }, 1000);
+            }
+            
+            // Execute Render
+            function executeRender() {
+                if (!connected) return;
+                if (currentRenderer === 'none') {
+                    logConsole('⚠️  Please select a renderer first', 'warning');
+                    return;
+                }
+                if (currentDashboard === 'none') {
+                    logConsole('⚠️  Please select a dashboard first', 'warning');
+                    return;
+                }
+                
+                commandCount++;
+                const rendererName = currentRenderer === 'wasm' ? 'WASM/Blitz' : 
+                                  currentRenderer === 'webgl' ? 'WebGL' : 'JavaScript';
+                
+                logConsole(`🖌️  Rendering ${currentDashboard} with ${rendererName}...`, 'info');
+                
+                // Simulate rendering
+                setTimeout(() => {
+                    logConsole(`✅ Frame rendered successfully`, 'success');
+                    updateStats();
+                    
+                    // Simulate renderer-specific performance
+                    const performance = currentRenderer === 'wasm' ? 95 : 
+                                      currentRenderer === 'webgl' ? 85 : 70;
+                    updateGauge(performance);
+                }, 1200);
+            }
+            
+            // Update UI State
+            function updateUIState() {
+                // Update connection button
+                connectBtn.textContent = connected ? 'DISCONNECT' : 'CONNECT';
+                
+                // Update status indicators
+                connectionStatus.textContent = connected ? 'CONNECTED' : 'DISCONNECTED';
+                statusDot.classList.toggle('disconnected', !connected);
+                
+                // Update renderer status
+                const rendererName = currentRenderer === 'wasm' ? 'WASM/Blitz' : 
+                                  currentRenderer === 'webgl' ? 'WebGL' : 
+                                  currentRenderer === 'javascript' ? 'JavaScript' : 'NONE';
+                rendererStatus.textContent = `RENDERER: ${rendererName}`;
+                
+                // Update renderer info
+                if (!connected) {
+                    rendererInfo.textContent = 'Disconnected - Connect to activate';
+                    updateGauge(0);
+                } else if (currentRenderer === 'none') {
+                    rendererInfo.textContent = 'Connected - Select renderer to begin';
+                    updateGauge(0);
+                } else {
+                    rendererInfo.textContent = `${rendererName} renderer active`;
+                }
+            }
+            
+            // Update Gauge
+            function updateGauge(percentage) {
+                performanceGauge.style.width = percentage + '%';
+                performanceGauge.textContent = percentage + '%';
+            }
+            
+            // Update Stats
+            function updateStats() {
+                // Update command count
+                document.getElementById('commands-stat').textContent = commandCount;
+                
+                // Update memory (randomize slightly)
+                const memory = connected ? Math.floor(Math.random() * 50) + 80 : 0;
+                document.getElementById('memory-stat').textContent = memory + 'MB';
+                
+                // Update uptime
+                if (startTime) {
+                    const uptime = Math.floor((new Date() - startTime) / 1000);
+                    document.getElementById('uptime-stat').textContent = uptime + 's';
+                } else {
+                    document.getElementById('uptime-stat').textContent = '0s';
+                }
+                
+                // Update status
+                const status = connected ? 
+                    currentRenderer !== 'none' && currentDashboard !== 'none' ? 'READY' : 'IDLE' : 'OFFLINE';
+                document.getElementById('status-stat').textContent = status;
+                
+                // Update FPS
+                const fps = connected ? 
+                    currentRenderer !== 'none' ? Math.floor(Math.random() * 30) + 30 : 0 : 0;
+                fpsStatus.textContent = `FPS: ${fps}`;
+            }
+            
+            // Performance Monitor
+            function startPerformanceMonitor() {
+                if (performanceInterval) return;
+                
+                performanceInterval = setInterval(() => {
+                    if (connected && currentRenderer !== 'none') {
+                        // Simulate performance fluctuations
+                        const basePerformance = currentRenderer === 'wasm' ? 90 : 
+                                              currentRenderer === 'webgl' ? 80 : 65;
+                        const fluctuation = Math.floor(Math.random() * 20) - 10;
+                        const performance = Math.min(100, Math.max(40, basePerformance + fluctuation));
+                        updateGauge(performance);
+                    }
+                    updateStats();
+                }, 2000);
+            }
+            
+            // Log to Console
+            function logConsole(message, type = 'info') {
+                const line = document.createElement('div');
+                line.className = `console-line ${type}`;
+                line.textContent = message;
+                consoleElement.appendChild(line);
+                consoleElement.scrollTop = consoleElement.scrollHeight;
+            }
+            
+            // Clear Console
+            function clearConsole() {
+                consoleElement.innerHTML = '';
+                logConsole('🧹 Console cleared', 'info');
+            }
+            
+            // Initialize
+            init();
+            
+            // Log initial state
+            logConsole('🎮 ThinUI Live Control Panel ready!', 'success');
+            logConsole('💡 Click CONNECT to start session', 'info');
+        });
+    </script>
+</body>
+</html>

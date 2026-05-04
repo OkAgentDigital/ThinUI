@@ -1,0 +1,51 @@
+{
+  "version": "1.0",
+  "type": "dashboard",
+  "title": "Plugin & Theme Demo",
+  "description": "Demonstrating ThinUI's extensible architecture",
+  "theme": "modern",
+  "blocks": [
+    {
+      "type": "teletext-page",
+      "extra": {
+        "content": "   P L U G I N   D E M O N S T R A T I O N   \n-----------------------------------------\nThinUI supports extensible plugins and themes.\n\nCurrent plugins available:\n- teletext-page (built-in)\n- list (built-in)\n- gauge (demo)\n- chart (planned)\n\nThemes available:\n- teletext (default)\n- modern (demo)"
+      }
+    },
+    {
+      "type": "gauge",
+      "extra": {
+        "label": "System Health",
+        "value": 85,
+        "min": 0,
+        "max": 100,
+        "units": "%"
+      }
+    },
+    {
+      "type": "gauge",
+      "extra": {
+        "label": "Storage Capacity",
+        "value": 65,
+        "min": 0,
+        "max": 100,
+        "units": "%"
+      }
+    },
+    {
+      "type": "gauge",
+      "extra": {
+        "label": "Network Activity",
+        "value": 30,
+        "min": 0,
+        "max": 100,
+        "units": "%"
+      }
+    },
+    {
+      "type": "list",
+      "extra": {
+        "items": "Plugin Architecture:\n- Frontend: JavaScript renderers\n- Backend: Rust commands\n- Data: UDX format\n- Themes: CSS variables\n\nComponent Usage:\n- Web Component\n- iframe Embedding\n- Tauri Window\n- Standalone App"
+      }
+    }
+  ]
+}

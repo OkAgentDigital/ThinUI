@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Blitz Example</title>
+</head>
+<body>
+    <h1>Blitz Example</h1>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <script type="module">
+        // Simple JavaScript fallback
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, 800, 600);
+        
+        ctx.fillStyle = '#67B6BD';
+        ctx.font = '32px Courier New';
+        ctx.fillText('Blitz Example - Working', 50, 50);
+    </script>
+</body>
+</html>

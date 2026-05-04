@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThinUI Blitz Demo</title>
+    <style>
+        /* Retro Blitz Theme - Inspired by classic computing */
+        :root {
+            --retro-black: #111111;
+            --retro-gray: #333333;
+            --retro-blue: #67B6BD;
+            --retro-purple: #8B3F96;
+            --retro-green: #32CD32;
+            --retro-yellow: #FFD700;
+            --retro-cyan: #00FFFF;
+            --retro-magenta: #FF00FF;
+            --retro-border: #444444;
+            --retro-glow: 0 0 10px rgba(103, 182, 189, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', 'Lucida Console', monospace;
+            background-color: var(--retro-black);
+            color: var(--retro-cyan);
+            line-height: 1.4;
+            overflow-x: hidden;
+        }
+
+        /* Retro Terminal Layout */
+        .terminal {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid var(--retro-border);
+            box-shadow: var(--retro-glow);
+        }
+
+        /* Retro Title Bar */
+        .title-bar {
+            background: linear-gradient(90deg, var(--retro-black), var(--retro-gray));
+            color: var(--retro-blue);
+            padding: 12px 20px;
+            border-bottom: 2px solid var(--retro-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .title-bar .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .title-bar .blitz-icon {
+            color: var(--retro-blue);
+            font-size: 1.5em;
+        }
+
+        .title-bar .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-controls button {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: none;
+            color: #aaa;
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .window-controls button:hover {
+            color: white;
+        }
+
+        /* Retro Status Bar */
+        .status-bar {
+            background: linear-gradient(90deg, var(--retro-gray), var(--retro-black));
+            color: var(--retro-green);
+            padding: 8px 20px;
+            border-bottom: 2px solid var(--retro-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--retro-green);
+            box-shadow: 0 0 5px var(--retro-green);
+        }
+
+        .status-dot.disconnected {
+            background-color: var(--retro-yellow);
+            box-shadow: 0 0 5px var(--retro-yellow);
+        }
+
+        .status-dot.error {
+            background-color: var(--retro-magenta);
+            box-shadow: 0 0 5px var(--retro-magenta);
+        }
+
+        /* Main Content Area */
+        .content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Retro Panel */
+        .panel {
+            background: linear-gradient(135deg, rgba(17, 17, 17, 0.8), rgba(51, 51, 51, 0.8));
+            border: 2px solid var(--retro-border);
+            border-radius: 4px;
+            padding: 15px;
+            box-shadow: var(--retro-glow);
+        }
+
+        .panel-title {
+            color: var(--retro-blue);
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            border-bottom: 1px solid var(--retro-border);
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Blitz UI Elements */
+        .blitz-button {
+            background: linear-gradient(90deg, var(--retro-blue), var(--retro-purple));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-family: inherit;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 4px 0 var(--retro-gray);
+            transition: all 0.1s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .blitz-button:hover {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--retro-gray);
+        }
+
+        .blitz-button:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .blitz-button.secondary {
+            background: linear-gradient(90deg, var(--retro-gray), var(--retro-black));
+            color: var(--retro-cyan);
+        }
+
+        /* Retro Select */
+        .blitz-select {
+            background: var(--retro-gray);
+            color: var(--retro-cyan);
+            border: 2px solid var(--retro-border);
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .blitz-select option {
+            background: var(--retro-black);
+            color: var(--retro-cyan);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-group label {
+            color: var(--retro-yellow);
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Renderer Display */
+        .renderer-display {
+            background: var(--retro-black);
+            border: 3px double var(--retro-blue);
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .renderer-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--retro-blue), var(--retro-purple), var(--retro-blue));
+        }
+
+        .renderer-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .blitz-logo {
+            font-size: 3em;
+            background: linear-gradient(45deg, var(--retro-blue), var(--retro-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: var(--retro-glow);
+        }
+
+        .renderer-info {
+            text-align: center;
+            color: var(--retro-green);
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .renderer-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: rgba(17, 17, 17, 0.5);
+            border: 1px solid var(--retro-border);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .stat-label {
+            color: var(--retro-yellow);
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: var(--retro-cyan);
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Console Output */
+        .console {
+            background: var(--retro-black);
+            border: 2px solid var(--retro-border);
+            border-radius: 4px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
+            color: var(--retro-green);
+            white-space: pre-wrap;
+        }
+
+        .console-line {
+            margin-bottom: 5px;
+        }
+
+        .console-line.info {
+            color: var(--retro-cyan);
+        }
+
+        .console-line.success {
+            color: var(--retro-green);
+        }
+
+        .console-line.warning {
+            color: var(--retro-yellow);
+        }
+
+        .console-line.error {
+            color: var(--retro-magenta);
+        }
+
+        /* Retro Gauges */
+        .gauge-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        .gauge-label {
+            color: var(--retro-yellow);
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .gauge {
+            height: 20px;
+            background: var(--retro-gray);
+            border: 2px solid var(--retro-border);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            width: 75%;
+            background: linear-gradient(90deg, var(--retro-blue), var(--retro-purple));
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .gauge-fill::after {
+            content: '75%';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 0.8em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .title-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .status-bar {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .blitz-button {
+                width: 100%;
+            }
+        }
+
+        /* Animation */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .blinking {
+            animation: blink 1s infinite;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--retro-gray);
+            border: 1px solid var(--retro-border);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--retro-blue), var(--retro-purple));
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(var(--retro-cyan), var(--retro-magenta));
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <!-- Title Bar -->
+        <div class="title-bar">
+            <div class="title">
+                <span class="blitz-icon">⚡</span>
+                <span>THINUI BLITZ DEMO</span>
+            </div>
+            <div class="window-controls">
+                <button title="Minimize">❖</button>
+                <button title="Maximize">⛶</button>
+                <button title="Close">✕</button>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-indicators">
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span>CONNECTED</span>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span>RENDERER: JAVASCRIPT</span>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span>FPS: 60</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Control Panel -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>🎛️ CONTROL PANEL</span>
+                </div>
+                <div class="control-panel">
+                    <div class="control-group">
+                        <label>Connection</label>
+                        <button class="blitz-button" id="connect-btn">CONNECT</button>
+                    </div>
+                    <div class="control-group">
+                        <label>Renderer</label>
+                        <select class="blitz-select" id="renderer-select">
+                            <option value="javascript">JavaScript</option>
+                            <option value="wasm">WASM/Blitz</option>
+                            <option value="webgl">WebGL</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Theme</label>
+                        <select class="blitz-select" id="theme-select">
+                            <option value="retro">Retro</option>
+                            <option value="modern">Modern</option>
+                            <option value="dark">Dark</option>
+                            <option value="terminal">Terminal</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Dashboard</label>
+                        <select class="blitz-select" id="dashboard-select">
+                            <option value="main">Main Dashboard</option>
+                            <option value="gauge">Gauge Demo</option>
+                            <option value="chart">Chart Demo</option>
+                            <option value="stats">Statistics</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Action</label>
+                        <button class="blitz-button secondary" id="render-btn">RENDER</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Renderer Display -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>🖥️ RENDERER DISPLAY</span>
+                </div>
+                <div class="renderer-display">
+                    <div class="renderer-content">
+                        <div class="blitz-logo">⚡ BLITZ</div>
+                        <div class="renderer-info">High-Performance WASM Renderer</div>
+                        <div class="gauge-container">
+                            <div class="gauge-label">Performance</div>
+                            <div class="gauge">
+                                <div class="gauge-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="renderer-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">Frames</div>
+                                <div class="stat-value" id="frames-stat">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Memory</div>
+                                <div class="stat-value" id="memory-stat">128MB</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Vertices</div>
+                                <div class="stat-value" id="vertices-stat">10K</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Shaders</div>
+                                <div class="stat-value" id="shaders-stat">4</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Console Output -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>📋 CONSOLE OUTPUT</span>
+                    <button class="blitz-button secondary" id="clear-console" style="font-size: 0.8em; padding: 5px 10px;">CLEAR</button>
+                </div>
+                <div class="console" id="console">
+                    <div class="console-line info">🔍 Initializing Blitz renderer...</div>
+                    <div class="console-line success">✅ WASM module loaded successfully</div>
+                    <div class="console-line info">🎨 Renderer ready: JavaScript (fallback)</div>
+                    <div class="console-line warning">⚠️  WASM/Blitz renderer available but not active</div>
+                    <div class="console-line info">📊 Dashboard loaded: Main Dashboard</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ThinUI Blitz Demo - Interactive JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // DOM Elements
+            const connectBtn = document.getElementById('connect-btn');
+            const rendererSelect = document.getElementById('renderer-select');
+            const themeSelect = document.getElementById('theme-select');
+            const dashboardSelect = document.getElementById('dashboard-select');
+            const renderBtn = document.getElementById('render-btn');
+            const clearConsoleBtn = document.getElementById('clear-console');
+            const consoleElement = document.getElementById('console');
+            const statusDots = document.querySelectorAll('.status-dot');
+            const gaugeFill = document.querySelector('.gauge-fill');
+            
+            // State
+            let connected = false;
+            let currentRenderer = 'javascript';
+            let currentTheme = 'retro';
+            let currentDashboard = 'main';
+            let frameCount = 0;
+            
+            // Initialize
+            function init() {
+                logConsole('🚀 ThinUI Blitz Demo initialized', 'info');
+                updateUIState();
+                setupEventListeners();
+                startPerformanceMonitor();
+            }
+            
+            // Setup Event Listeners
+            function setupEventListeners() {
+                // Connection button
+                connectBtn.addEventListener('click', function() {
+                    if (connected) {
+                        disconnect();
+                    } else {
+                        connect();
+                    }
+                });
+                
+                // Renderer selection
+                rendererSelect.addEventListener('change', function() {
+                    const renderer = this.value;
+                    switchRenderer(renderer);
+                });
+                
+                // Theme selection
+                themeSelect.addEventListener('change', function() {
+                    const theme = this.value;
+                    switchTheme(theme);
+                });
+                
+                // Dashboard selection
+                dashboardSelect.addEventListener('change', function() {
+                    const dashboard = this.value;
+                    loadDashboard(dashboard);
+                });
+                
+                // Render button
+                renderBtn.addEventListener('click', render);
+                
+                // Clear console
+                clearConsoleBtn.addEventListener('click', clearConsole);
+            }
+            
+            // Connect to core
+            function connect() {
+                connected = true;
+                logConsole('🔌 Connecting to core system...', 'info');
+                
+                // Simulate connection delay
+                setTimeout(() => {
+                    logConsole('✅ Connected successfully', 'success');
+                    updateUIState();
+                }, 500);
+            }
+            
+            // Disconnect from core
+            function disconnect() {
+                connected = false;
+                logConsole('🔌 Disconnecting from core...', 'info');
+                
+                // Simulate disconnection delay
+                setTimeout(() => {
+                    logConsole('✅ Disconnected', 'warning');
+                    updateUIState();
+                }, 500);
+            }
+            
+            // Switch renderer
+            function switchRenderer(renderer) {
+                currentRenderer = renderer;
+                const rendererName = renderer === 'wasm' ? 'WASM/Blitz' : renderer.charAt(0).toUpperCase() + renderer.slice(1);
+                
+                logConsole(`🎨 Switching to ${rendererName} renderer...`, 'info');
+                
+                // Simulate renderer switch
+                setTimeout(() => {
+                    logConsole(`✅ ${rendererName} renderer active`, 'success');
+                    updateUIState();
+                    
+                    // Update gauge based on renderer
+                    const performance = renderer === 'wasm' ? 95 : renderer === 'webgl' ? 85 : 70;
+                    updateGauge(performance);
+                }, 300);
+            }
+            
+            // Switch theme
+            function switchTheme(theme) {
+                currentTheme = theme;
+                logConsole(`🎨 Applying ${theme} theme...`, 'info');
+                
+                // Remove all theme classes
+                document.body.classList.remove('theme-retro', 'theme-modern', 'theme-dark', 'theme-terminal');
+                
+                // Add selected theme
+                document.body.classList.add(`theme-${theme}`);
+                
+                logConsole(`✅ ${theme} theme applied`, 'success');
+            }
+            
+            // Load dashboard
+            function loadDashboard(dashboard) {
+                currentDashboard = dashboard;
+                logConsole(`📊 Loading ${dashboard} dashboard...`, 'info');
+                
+                // Simulate loading
+                setTimeout(() => {
+                    logConsole(`✅ ${dashboard} dashboard loaded`, 'success');
+                    updateUIState();
+                }, 800);
+            }
+            
+            // Render
+            function render() {
+                frameCount++;
+                const rendererName = currentRenderer === 'wasm' ? 'WASM/Blitz' : currentRenderer.charAt(0).toUpperCase() + currentRenderer.slice(1);
+                
+                logConsole(`🖌️  Rendering with ${rendererName}...`, 'info');
+                
+                // Update stats
+                updateStats();
+                
+                setTimeout(() => {
+                    logConsole(`✅ Frame ${frameCount} rendered`, 'success');
+                }, 200);
+            }
+            
+            // Update UI State
+            function updateUIState() {
+                // Update connection button
+                connectBtn.textContent = connected ? 'DISCONNECT' : 'CONNECT';
+                
+                // Update status indicators
+                const statusTexts = ['CONNECTED', 'RENDERER: ' + currentRenderer.toUpperCase(), 'FPS: 60'];
+                statusDots.forEach((dot, index) => {
+                    if (index === 0) {
+                        dot.classList.toggle('disconnected', !connected);
+                    }
+                });
+                
+                // Update status text
+                document.querySelectorAll('.status-indicator span:not(.status-dot)').forEach((span, index) => {
+                    if (index === 1) {
+                        span.textContent = 'RENDERER: ' + currentRenderer.toUpperCase();
+                    }
+                });
+            }
+            
+            // Update Gauge
+            function updateGauge(percentage) {
+                gaugeFill.style.width = percentage + '%';
+                gaugeFill.querySelector('::after').textContent = percentage + '%';
+            }
+            
+            // Update Stats
+            function updateStats() {
+                // Randomize stats slightly
+                const frames = Math.floor(Math.random() * 1000) + 500;
+                const memory = Math.floor(Math.random() * 50) + 80;
+                const vertices = Math.floor(Math.random() * 5000) + 5000;
+                const shaders = Math.floor(Math.random() * 3) + 2;
+                
+                document.getElementById('frames-stat').textContent = frames.toLocaleString();
+                document.getElementById('memory-stat').textContent = memory + 'MB';
+                document.getElementById('vertices-stat').textContent = (vertices / 1000).toFixed(1) + 'K';
+                document.getElementById('shaders-stat').textContent = shaders;
+            }
+            
+            // Performance Monitor
+            function startPerformanceMonitor() {
+                setInterval(() => {
+                    if (connected) {
+                        // Simulate performance updates
+                        const performance = Math.min(95, Math.max(60, Math.floor(Math.random() * 20) + 75));
+                        updateGauge(performance);
+                    }
+                }, 2000);
+            }
+            
+            // Log to Console
+            function logConsole(message, type = 'info') {
+                const line = document.createElement('div');
+                line.className = `console-line ${type}`;
+                line.textContent = message;
+                consoleElement.appendChild(line);
+                consoleElement.scrollTop = consoleElement.scrollHeight;
+            }
+            
+            // Clear Console
+            function clearConsole() {
+                consoleElement.innerHTML = '';
+                logConsole('🧹 Console cleared', 'info');
+            }
+            
+            // Initialize the demo
+            init();
+            
+            // Log initial state
+            logConsole('🎮 ThinUI Blitz Demo ready!', 'success');
+            logConsole('💡 Click buttons to interact with the demo', 'info');
+        });
+    </script>
+</body>
+</html>

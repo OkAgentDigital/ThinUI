@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThinUI – C64 Theme Test</title>
+    <link rel="stylesheet" href="./ui/themes/c64.css">
+  <script type="module" crossorigin src="./dist/assets/index-D_iZotx1.js"></script>
+  <link rel="stylesheet" crossorigin href="./dist/assets/index-AHi60Gib.css">
+</head>
+<body>
+    <div data-tauri-drag-region class="titlebar" id="titlebar">
+        <div class="titlebar-logo">
+            <span class="logo">⎔</span>
+            <span class="title">ThinUI - C64 Theme</span>
+        </div>
+        <div class="titlebar-controls">
+            <button id="minimize-btn" class="titlebar-btn" aria-label="Minimize">─</button>
+            <button id="maximize-btn" class="titlebar-btn" aria-label="Maximize">□</button>
+            <button id="close-btn" class="titlebar-btn close" aria-label="Close">✕</button>
+        </div>
+    </div>
+    <div class="connection-status" id="connection-status">
+        <span class="status-dot disconnected"></span>
+        <span id="status-text">Testing C64 Theme</span>
+        <button id="connect-btn" class="connect-btn">Connected</button>
+    </div>
+    <main id="app" class="app-container">
+        <div class="teletext-page">
+            ✅ C64 Theme Loaded Successfully!
+            
+This is a test of the C64 toybox theme.
+The theme features:
+- Purple/blue color scheme
+- Retro C64 styling
+- Teletext-style formatting
+- Gauge components
+        </div>
+        <div class="teletext-list">
+            📋 Available Toybox Themes:
+            
+• c64.css - Commodore 64 style
+• nes.css - Nintendo Entertainment System
+• modern.css - Modern clean theme
+• c64-authentic.css - Authentic C64
+• nes-authentic.css - Authentic NES
+• teletext50.css - 1950s teletext
+        </div>
+    </main>
+</body>
+</html>

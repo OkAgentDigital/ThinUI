@@ -1,0 +1,40 @@
+/* ═══════════════════════════════════════════
+   C64 Theme for Gift Wrapper (ThinUI)
+   Retro Commodore 64 – Flowbite dark mode compatible
+   ═══════════════════════════════════════════ */
+
+:root {
+    /* Override Flowbite dark palette with C64 colors */
+    --gw-bg-primary: #1a1a3e;
+    --gw-bg-secondary: #252555;
+    --gw-bg-tertiary: #35356e;
+    --gw-bg-hover: #454588;
+
+    --gw-accent: #7dd3fc;           /* sky-300 */
+    --gw-accent-hover: #38bdf8;     /* sky-400 */
+    --gw-accent-light: #bae6fd;     /* sky-200 */
+    --gw-accent-subtle: rgba(125, 211, 252, 0.1);
+
+    --gw-text: #e0e7ff;
+    --gw-text-heading: #e0e7ff;
+    --gw-text-body: #c7d2fe;
+    --gw-text-muted: #a5b4fc;
+    --gw-text-disabled: #818cf8;
+
+    --gw-border: #4f46e5;           /* indigo-600 */
+    --gw-border-light: #6366f1;     /* indigo-500 */
+    --gw-border-subtle: #3730a3;    /* indigo-800 */
+
+    --gw-success: #34d399;
+    --gw-danger: #f87171;
+    --gw-success-soft: rgba(52, 211, 153, 0.1);
+    --gw-danger-soft: rgba(248, 113, 113, 0.1);
+
+    /* Legacy vars */
+    --bg-color: var(--gw-bg-secondary);
+    --text-color: var(--gw-text);
+    --border-color: var(--gw-border);
+    --accent-color: var(--gw-accent);
+    --gauge-bg: var(--gw-accent-subtle);
+    --gauge-fill: linear-gradient(90deg, #7dd3fc, #bae6fd);
+}
