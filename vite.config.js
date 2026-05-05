@@ -9,6 +9,12 @@ export default defineConfig({
   build: {
     outDir: '../dist',  // Output to parent dist directory
     emptyOutDir: true,
+    rollupOptions: {
+      // Don't try to bundle non-module scripts
+      input: {
+        main: 'ui/index.html',
+      }
+    }
   },
   server: {
     port: 4687,

@@ -1,10 +1,10 @@
 [package]
-name = "app"
-version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+name = "giftwrapper"
+version = "1.0.0"
+description = "GiftWrapper – ThinUI Desktop Renderer for uCode1 & uCode2"
+authors = ["OkAgentDigital"]
+license = "MIT"
+repository = "https://github.com/OkAgentDigital/ThinUI"
 edition = "2021"
 rust-version = "1.77.2"
 
@@ -24,3 +24,5 @@ log = "0.4"
 tauri = { version = "2.10.3", features = [] }
 tauri-plugin-log = "2"
 shellexpand = "3.1"
+reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1", features = ["full"] }

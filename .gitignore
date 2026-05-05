@@ -1,2 +1,7 @@
-target/
 .DS_Store
+dist/
+dist/assets/
+node_modules/
+src-tauri/target/
+target/
+tauri.pid

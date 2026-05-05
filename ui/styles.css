@@ -182,6 +182,7 @@ body {
     height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
 }
 
 
@@ -771,4 +772,88 @@ body {
     padding: 40px;
     color: var(--gw-text-muted);
     font-style: italic;
+}
+
+/* ═══════════════════════════════════════════
+   UPDATE BANNER (Dogfooding)
+   ═══════════════════════════════════════════ */
+
+.update-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    background: var(--gw-bg-secondary);
+    border: 1px solid var(--gw-accent);
+    border-radius: var(--radius-base);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    padding: 12px 20px;
+    min-width: 400px;
+    max-width: 600px;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+    to   { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+.update-banner-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.update-banner-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.update-banner-text {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--gw-text-heading);
+}
+
+.update-banner-sub {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--gw-text-muted);
+    margin-top: 2px;
+}
+
+.update-banner-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.update-banner-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--gw-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    background: transparent;
+    color: var(--gw-text);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.update-banner-btn:hover {
+    background: var(--gw-bg-tertiary);
+    border-color: var(--gw-border-light);
+}
+
+.update-banner-btn.primary {
+    background: var(--gw-accent);
+    border-color: var(--gw-accent);
+    color: #fff;
+}
+
+.update-banner-btn.primary:hover {
+    background: var(--gw-accent-hover);
+    border-color: var(--gw-accent-hover);
 }

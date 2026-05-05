@@ -1,22 +1,24 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "thinui",
-  "version": "0.1.0",
-  "identifier": "com.okagentdigital.thinui",
+  "productName": "GiftWrapper",
+  "version": "1.0.0",
+  "identifier": "com.okagentdigital.giftwrapper",
   "build": {
-    "frontendDist": "../ui",
+    "frontendDist": "../dist",
     "devUrl": null,
     "beforeDevCommand": null,
-    "beforeBuildCommand": null
+    "beforeBuildCommand": "npm run build"
   },
   "app": {
     "windows": [
       {
-        "title": "thinui",
-        "width": 800,
-        "height": 600,
+        "title": "Gift Wrapper",
+        "width": 1280,
+        "height": 800,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "minWidth": 800,
+        "minHeight": 600
       }
     ],
     "security": {
